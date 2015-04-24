@@ -1,0 +1,17 @@
+Z:\C# Projects\Open Sauce\Xbox\Yelo Game Carnage Report\obj\Release\ResolveAssemblyReference.cache
+Z:\C# Projects\Open Sauce\Xbox\Yelo Game Carnage Report\obj\Release\Yelo_Game_Carnage_Report.Main.resources
+Z:\C# Projects\Open Sauce\Xbox\Yelo Game Carnage Report\obj\Release\Yelo_Game_Carnage_Report.Properties.Resources.resources
+Z:\C# Projects\Open Sauce\Xbox\Yelo Game Carnage Report\obj\Release\Yelo_Game_Carnage_Report.XBoxLocator.resources
+Z:\C# Projects\Open Sauce\Xbox\Yelo Game Carnage Report\obj\Release\Yelo Game Carnage Report.csproj.GenerateResource.Cache
+Z:\C# Projects\Open Sauce\Xbox\Yelo Game Carnage Report\bin\Release\YeloDebugSettings.xml
+Z:\C# Projects\Open Sauce\Xbox\Yelo Game Carnage Report\bin\Release\Yelo Game Carnage Report.exe.config
+Z:\C# Projects\Open Sauce\Xbox\Yelo Game Carnage Report\bin\Release\Yelo Game Carnage Report.exe
+Z:\C# Projects\Open Sauce\Xbox\Yelo Game Carnage Report\bin\Release\Yelo Game Carnage Report.pdb
+Z:\C# Projects\Open Sauce\Xbox\Yelo Game Carnage Report\bin\Release\YeloDebug.dll
+Z:\C# Projects\Open Sauce\Xbox\Yelo Game Carnage Report\bin\Release\LowLevel.dll
+Z:\C# Projects\Open Sauce\Xbox\Yelo Game Carnage Report\bin\Release\LowLevel.pdb
+Z:\C# Projects\Open Sauce\Xbox\Yelo Game Carnage Report\bin\Release\YeloDebug.pdb
+Z:\C# Projects\Open Sauce\Xbox\Yelo Game Carnage Report\bin\Release\YeloDebug.xml
+Z:\C# Projects\Open Sauce\Xbox\Yelo Game Carnage Report\obj\Release\Yelo_Game_Carnage_Report.Settings.resources
+Z:\C# Projects\Open Sauce\Xbox\Yelo Game Carnage Report\obj\Release\Yelo Game Carnage Report.exe
+Z:\C# Projects\Open Sauce\Xbox\Yelo Game Carnage Report\obj\Release\Yelo Game Carnage Report.pdb
