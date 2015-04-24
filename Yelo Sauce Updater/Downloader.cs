@@ -6,7 +6,7 @@ using System.IO;
 using SevenZip;
 using System.Collections.Generic;
 
-namespace Updater
+namespace Yelo.Updater
 {
     internal partial class Downloader : Form
     {

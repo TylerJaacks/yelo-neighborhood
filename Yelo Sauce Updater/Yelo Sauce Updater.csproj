@@ -35,7 +35,9 @@
   </PropertyGroup>
   <Import Project="$(SolutionDir)Yelo Sauce.Cs.props" />
   <ItemGroup>
-    <Reference Include="SevenZipSharp, Version=0.64.3890.29348, Culture=neutral, PublicKeyToken=20de82c62b055c88, processorArchitecture=MSIL" />
+    <Reference Include="SevenZipSharp">
+      <HintPath>..\External\SevenZipSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>

@@ -4,7 +4,7 @@ using System.Net;
 using System.IO;
 using System.Diagnostics;
 
-namespace Updater
+namespace Yelo.Updater
 {
     public static class Jobs
     {

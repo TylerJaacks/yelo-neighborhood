@@ -53,11 +53,11 @@
     <Compile Include="Prompt.Designer.cs">
       <DependentUpon>Prompt.cs</DependentUpon>
     </Compile>
-    <Compile Include="XCE.cs">
+    <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="XCE.Designer.cs">
-      <DependentUpon>XCE.cs</DependentUpon>
+    <Compile Include="Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -65,9 +65,9 @@
       <SubType>Designer</SubType>
       <DependentUpon>Prompt.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="XCE.resx">
+    <EmbeddedResource Include="Main.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>XCE.cs</DependentUpon>
+      <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

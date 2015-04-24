@@ -1,4 +1,4 @@
-﻿namespace Updater
+﻿namespace Yelo.Updater
 {
     partial class Downloader
     {

@@ -27,7 +27,7 @@ namespace Yelo.Stream
         }
 
 
-        public void Main()
+        public void VideoLoop()
         {
             try
             {
@@ -394,7 +394,7 @@ namespace Yelo.Stream
                     // ~63fps with a small video size using an immediate presentation window
 
                     // main program loop
-                    Main();
+                    VideoLoop();
                 }
             }
             catch (Exception)
