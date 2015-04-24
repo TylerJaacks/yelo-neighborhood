@@ -32,7 +32,13 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
-  <Import Project="$(SolutionDir)Yelo Sauce.Cs.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -43,6 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ImageFormatSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImageFormatSelector.Designer.cs">
+      <DependentUpon>ImageFormatSelector.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -51,6 +63,16 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScreenshotTool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ScreenshotTool.Designer.cs">
+      <DependentUpon>ScreenshotTool.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="ImageFormatSelector.resx">
+      <DependentUpon>ImageFormatSelector.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <SubType>Designer</SubType>
       <DependentUpon>Main.cs</DependentUpon>
@@ -65,6 +87,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="ScreenshotTool.resx">
+      <DependentUpon>ScreenshotTool.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -81,6 +107,7 @@
     </Content>
     <Content Include="YeloDebugSettings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -114,6 +141,10 @@
     <ProjectReference Include="..\Yelo Debug\Yelo Debug.csproj">
       <Project>{F5DB1C08-E8A7-4618-9E0E-0CC225597C75}</Project>
       <Name>YeloDebug</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Yelo Shared\Yelo Shared.csproj">
+      <Project>{aaf2dddf-ac76-4ab0-bf5b-a1cf680163cd}</Project>
+      <Name>Yelo Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

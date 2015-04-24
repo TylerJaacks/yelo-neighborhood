@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
 
-namespace Yelo.Neighborhood
+namespace Yelo.Stream
 {
     public partial class ImageFormatSelector : Form
     {

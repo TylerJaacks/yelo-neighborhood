@@ -1,6 +1,6 @@
 ﻿namespace Yelo.Neighborhood
 {
-    partial class Main
+    partial class XBoxExplorer
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(XBoxExplorer));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.probar = new System.Windows.Forms.ToolStripProgressBar();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -51,13 +51,14 @@
             this.imgLstFiles = new System.Windows.Forms.ImageList(this.components);
             this.menuStrip2 = new System.Windows.Forms.MenuStrip();
             this.xBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.screenshotToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.systemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.syncTimeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lEDStateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.memoryHackerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.cmdCyclePower = new System.Windows.Forms.ToolStripMenuItem();
             this.cmdReset = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,8 +74,6 @@
             this.deleteFileWorker = new System.ComponentModel.BackgroundWorker();
             this.SFD = new System.Windows.Forms.SaveFileDialog();
             this.downloadFileWorker = new System.ComponentModel.BackgroundWorker();
-            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.memoryHackerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.mnuFiles.SuspendLayout();
@@ -172,8 +171,8 @@
             this.listFiles.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.listFiles.TabIndex = 2;
             this.listFiles.UseCompatibleStateImageBehavior = false;
-            this.listFiles.ItemActivate += new System.EventHandler(this.listFiles_ItemActivate);
             this.listFiles.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.listFiles_AfterLabelEdit);
+            this.listFiles.ItemActivate += new System.EventHandler(this.listFiles_ItemActivate);
             this.listFiles.DragDrop += new System.Windows.Forms.DragEventHandler(this.listFiles_DragDrop);
             this.listFiles.DragEnter += new System.Windows.Forms.DragEventHandler(this.listFiles_DragEnter);
             this.listFiles.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listFiles_KeyUp);
@@ -263,7 +262,6 @@
             // xBoxToolStripMenuItem
             // 
             this.xBoxToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.screenshotToolToolStripMenuItem,
             this.toolStripSeparator3,
             this.systemToolStripMenuItem,
             this.toolStripSeparator1,
@@ -277,14 +275,6 @@
             this.xBoxToolStripMenuItem.Name = "xBoxToolStripMenuItem";
             this.xBoxToolStripMenuItem.Size = new System.Drawing.Size(45, 20);
             this.xBoxToolStripMenuItem.Text = "XBox";
-            this.xBoxToolStripMenuItem.DropDownOpening += new System.EventHandler(this.xBoxToolStripMenuItem_DropDownOpening);
-            // 
-            // screenshotToolToolStripMenuItem
-            // 
-            this.screenshotToolToolStripMenuItem.Name = "screenshotToolToolStripMenuItem";
-            this.screenshotToolToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
-            this.screenshotToolToolStripMenuItem.Text = "Screenshot Tool";
-            this.screenshotToolToolStripMenuItem.Click += new System.EventHandler(this.screenshotToolToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
@@ -307,28 +297,42 @@
             // propertiesToolStripMenuItem
             // 
             this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.propertiesToolStripMenuItem.Text = "Properties";
             this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.propertiesToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(162, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(156, 6);
             // 
             // syncTimeToolStripMenuItem
             // 
             this.syncTimeToolStripMenuItem.Name = "syncTimeToolStripMenuItem";
-            this.syncTimeToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.syncTimeToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.syncTimeToolStripMenuItem.Text = "Sync Time";
             this.syncTimeToolStripMenuItem.Click += new System.EventHandler(this.syncTimeToolStripMenuItem_Click);
             // 
             // lEDStateToolStripMenuItem
             // 
             this.lEDStateToolStripMenuItem.Name = "lEDStateToolStripMenuItem";
-            this.lEDStateToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.lEDStateToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.lEDStateToolStripMenuItem.Text = "LED State";
             this.lEDStateToolStripMenuItem.Click += new System.EventHandler(this.lEDStateToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(156, 6);
+            this.toolStripSeparator6.Visible = false;
+            // 
+            // memoryHackerToolStripMenuItem
+            // 
+            this.memoryHackerToolStripMenuItem.Name = "memoryHackerToolStripMenuItem";
+            this.memoryHackerToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.memoryHackerToolStripMenuItem.Text = "Memory Hacker";
+            this.memoryHackerToolStripMenuItem.Visible = false;
+            this.memoryHackerToolStripMenuItem.Click += new System.EventHandler(this.memoryHackerToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
@@ -417,19 +421,7 @@
             this.downloadFileWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.downloadFileWorker_DoWork);
             this.downloadFileWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.Worker_RunWorkerCompleted);
             // 
-            // toolStripSeparator6
-            // 
-            this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(162, 6);
-            // 
-            // memoryHackerToolStripMenuItem
-            // 
-            this.memoryHackerToolStripMenuItem.Name = "memoryHackerToolStripMenuItem";
-            this.memoryHackerToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-            this.memoryHackerToolStripMenuItem.Text = "Memory Hacker";
-            this.memoryHackerToolStripMenuItem.Click += new System.EventHandler(this.memoryHackerToolStripMenuItem_Click);
-            // 
-            // Main
+            // XBoxExplorer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -440,7 +432,7 @@
             this.Controls.Add(this.menuStrip2);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
-            this.Name = "Main";
+            this.Name = "XBoxExplorer";
             this.Text = "Yelo Neighborhood";
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
@@ -465,7 +457,6 @@
         private System.Windows.Forms.ImageList imgLstFiles;
         private System.Windows.Forms.MenuStrip menuStrip2;
         private System.Windows.Forms.ToolStripMenuItem xBoxToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem screenshotToolToolStripMenuItem;
         private System.ComponentModel.BackgroundWorker launchTitleWorker;
         private System.Windows.Forms.ToolStripMenuItem cmdRefresh;
         private System.ComponentModel.BackgroundWorker sendFileWorker;

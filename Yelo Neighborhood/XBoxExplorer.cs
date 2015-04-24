@@ -6,10 +6,11 @@ using Yelo.Debug;
 using System.IO;
 using System.Threading;
 using System.Xml;
+using Yelo.Shared;
 
 namespace Yelo.Neighborhood
 {
-    public partial class Main : Form
+    public partial class XBoxExplorer : Form
     {
         public enum Images
         {
@@ -25,26 +26,43 @@ namespace Yelo.Neighborhood
         Stack<string> DirectoryBackHistory = new Stack<string>();
         Stack<string> DirectoryForwardHistory = new Stack<string>();
 
-        public Main()
+        public XBoxExplorer()
         {
             InitializeComponent();
             LoadPartitions();
 
-            Text = Program.XBox.DebugName + " - " + Program.XBox.DebugIP + " - Yelo Neighborhood v" + Program.Version;
+            Text = XBoxIO.XBox.DebugName + " - " + XBoxIO.XBox.DebugIP + " - Yelo Neighborhood v" + Cache.Version;
 
             LoadScripts();
         }
 
+        bool FindXbox()
+        {
+            Enabled = false;
+            if (XBoxIO.FindXBox() == false)
+            {
+                Enabled = true;
+                return false;
+            }
+            return true;
+        }
+
+        void CompletedOperation()
+        {
+            Enabled = true;
+            probar.Style = ProgressBarStyle.Blocks;
+            StatusChanged("Ready.");
+        }
+
         public void RefreshFiles()
         {
-            if (!Program.XBox.Ping()) new Settings().ShowDialog();
             if (CurrentDirectory == "") LoadPartitions();
             else LoadDirectory(CurrentDirectory);
         }
 
         public void LoadPartitions()
         {
-            if (!Program.XBox.Ping()) new Settings().ShowDialog();
+            if (FindXbox() == false) return;
 
             CurrentDirectory = "";
 
@@ -54,26 +72,27 @@ namespace Yelo.Neighborhood
             ListViewGroup partitionsGroup = new ListViewGroup("Partitions");
             listFiles.Groups.Add(partitionsGroup);
 
-			foreach (string s in Program.XBox.GetPartitions())
+            foreach (string s in XBoxIO.XBox.GetPartitions())
                 listFiles.Items.Add(new ListViewItem(s, (int)Images.HDD, partitionsGroup));
 
             listFiles.LabelEdit = false;
             listFiles.ContextMenuStrip = null;
 			listFiles.EndUpdate();
             cmdNewFolder.Enabled = false;
+
+            CompletedOperation();
         }
 
         public void LoadDirectory(string dir)
         {
-            if(!Program.XBox.Ping()) new Settings().ShowDialog();
+            if (FindXbox() == false) return;
 
             List<FileInformation> files = null;
             try
-            { files = Program.XBox.GetDirectoryList(dir); }
+            { files = XBoxIO.XBox.GetDirectoryList(dir); }
             catch
             {
                 MessageBox.Show("Could Not Access: " + dir, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
-                if (!Program.XBox.Ping()) new Settings().ShowDialog();
                 return;
             }
 
@@ -127,14 +146,18 @@ namespace Yelo.Neighborhood
             listFiles.ContextMenuStrip = mnuFiles;
 			listFiles.EndUpdate();
             cmdNewFolder.Enabled = true;
+
+            CompletedOperation();
         }
 
-        #region Drag-Drop Files
+        #region Drag-Drop Send Files
         void listFiles_DragEnter(object sender, DragEventArgs e)
         { if (CurrentDirectory != "" && e.Data.GetDataPresent(DataFormats.FileDrop, false)) e.Effect = DragDropEffects.Copy; }
 
         void listFiles_DragDrop(object sender, DragEventArgs e)
         {
+            if (FindXbox() == false) return;
+
             List<FileInformation> files = new List<FileInformation>();
             foreach (string s in (string[])e.Data.GetData(DataFormats.FileDrop))
             {
@@ -154,45 +177,16 @@ namespace Yelo.Neighborhood
             List<FileInformation> files = (List<FileInformation>)e.Argument;
             foreach (FileInformation fi in files)
             {
-                if (fi.Attributes == FileAttributes.Directory) SendDirectory(fi, workingDir);
-                else SendFile(fi, workingDir);
+                if (fi.Attributes == FileAttributes.Directory) XBoxIO.SendDirectory(fi, workingDir, StatusChanged);
+                else XBoxIO.SendFile(fi, workingDir, StatusChanged);
             }
         }
-
-        void SendDirectory(FileInformation dir, string workingDir)
-        {
-            if (!Program.XBox.Ping()) new Settings().ShowDialog();
-            string dirname = Path.GetFileName(dir.Name);
-            if (!Program.XBox.FileExists(Path.Combine(workingDir, dirname))) Program.XBox.CreateDirectory(Path.Combine(workingDir, dirname));
-            foreach (string s in Directory.GetFiles(dir.Name, "*", SearchOption.TopDirectoryOnly))
-            {
-                FileInformation fi = new FileInformation();
-                fi.Name = s;
-                SendFile(fi, Path.Combine(workingDir, dirname));
-            }
-            foreach (string s in Directory.GetDirectories(dir.Name, "*", SearchOption.TopDirectoryOnly))
-            {
-                FileInformation fi = new FileInformation();
-                fi.Name = s;
-                SendDirectory(fi, Path.Combine(workingDir, dirname));
-            }
-        }
-
-        void SendFile(FileInformation file, string workingDir)
-        {
-            if (!Program.XBox.Ping())
-                new Settings().ShowDialog();
-            this.Enabled = false;
-            string filename = Path.GetFileName(file.Name);
-            string xboxFilename = Path.Combine(workingDir, filename);
-            if (Program.XBox.FileExists(xboxFilename) && MessageBox.Show(filename + "\n\nWould You Like To Overwrite The Old File?", "File Already Exists.", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No) return;
-            lblStatus.Text = "Sending File: " + filename;
-
-            Program.XBox.SendFile(file.Name, xboxFilename);
-        }
+        #endregion
 
         private void cmdDownload_Click(object sender, EventArgs e)
         {
+            if (FindXbox() == false) return;
+
             FileInformation selectedFile = (FileInformation)listFiles.SelectedItems[0].Tag;
             SFD.FileName = selectedFile.Name;
             SFD.Filter = Path.GetExtension(selectedFile.Name) + "|" + Path.GetExtension(selectedFile.Name);
@@ -207,48 +201,16 @@ namespace Yelo.Neighborhood
             FileInformation selectedFile = (FileInformation)((object[])e.Argument)[0];
             string filename = (string)((object[])e.Argument)[1];
             string workingDir = CurrentDirectory;
-            if (selectedFile.Attributes == FileAttributes.Directory) DownloadDirectory(selectedFile, workingDir);
-            else DownloadFile(selectedFile, workingDir, SFD.FileName);
+            if (selectedFile.Attributes == FileAttributes.Directory) XBoxIO.DownloadDirectory(selectedFile, workingDir, StatusChanged);
+            else XBoxIO.DownloadFile(selectedFile, workingDir, SFD.FileName, StatusChanged);
         }
-
-        void DownloadDirectory(FileInformation dir, string workingDir)
-        {
-            throw new NotImplementedException("Can Only Download Single Files!");
-
-            //if (!Program.XBox.Ping()) new Settings().ShowDialog();
-            //string dirname = Path.GetFileName(dir.Name);
-            //if (!Program.XBox.FileExists(Path.Combine(workingDir, dirname))) Program.XBox.CreateDirectory(Path.Combine(workingDir, dirname));
-            //foreach (string s in Directory.GetFiles(dir.Name, "*", SearchOption.TopDirectoryOnly))
-            //{
-            //    FileInformation fi = new FileInformation();
-            //    fi.Name = s;
-            //    SendFile(fi, Path.Combine(workingDir, dirname));
-            //}
-            //foreach (string s in Directory.GetDirectories(dir.Name, "*", SearchOption.TopDirectoryOnly))
-            //{
-            //    FileInformation fi = new FileInformation();
-            //    fi.Name = s;
-            //    SendDirectory(fi, Path.Combine(workingDir, dirname));
-            //}
-        }
-
-        void DownloadFile(FileInformation file, string workingDir, string destination)
-        {
-            if (!Program.XBox.Ping())
-                new Settings().ShowDialog();
-            this.Enabled = false;
-            string xboxFilename = Path.Combine(workingDir, file.Name);
-            if (!Program.XBox.FileExists(xboxFilename)) return;
-            lblStatus.Text = "Downloading File: " + file.Name;
-
-            Program.XBox.ReceiveFile(destination, xboxFilename);
-        }
-        #endregion
+       
 
         #region Navigation
         void cmdUpDir_Click(object sender, EventArgs e)
         {
-            if (!Program.XBox.Ping()) new Settings().ShowDialog();
+            if (FindXbox() == false) return;
+
             if (CurrentDirectory == "") return;
             
             DirectoryBackHistory.Push(CurrentDirectory);
@@ -264,7 +226,8 @@ namespace Yelo.Neighborhood
 
         void cmdBack_Click(object sender, EventArgs e)
         {
-            if (!Program.XBox.Ping()) new Settings().ShowDialog();
+            if (FindXbox() == false) return;
+
             DirectoryForwardHistory.Push(CurrentDirectory);
             string dir = DirectoryBackHistory.Pop();
 
@@ -277,7 +240,8 @@ namespace Yelo.Neighborhood
 
         void cmdForward_Click(object sender, EventArgs e)
         {
-            if (!Program.XBox.Ping()) new Settings().ShowDialog();
+            if (FindXbox() == false) return;
+
             DirectoryBackHistory.Push(CurrentDirectory);
             string dir = DirectoryForwardHistory.Pop();
 
@@ -295,31 +259,34 @@ namespace Yelo.Neighborhood
         #region Reboot
         void cmdCyclePower_Click(object sender, EventArgs e)
         {
-            this.Enabled = false;
-			try { Program.XBox.DmReboot(BootFlag.Cold, null); }
+            if (FindXbox() == false) return;
+
+            try { XBoxIO.XBox.DmReboot(BootFlag.Cold, null); }
             catch { }
             finally
             {
-                Hide();
-                if (Properties.Settings.Default.AutoDiscover) Program.FindXBox();
-                else Program.FindXBox(Properties.Settings.Default.XBoxIP);
+                XBoxIO.FindXBox();
             }
+
+            CompletedOperation();
         }
 
         void cmdReset_Click(object sender, EventArgs e)
         {
-            this.Enabled = false;
-            Program.XBox.Reset();
-            Hide(); 
-            if (Properties.Settings.Default.AutoDiscover) Program.FindXBox();
-            else Program.FindXBox(Properties.Settings.Default.XBoxIP);
+            if (FindXbox() == false) return;
+
+            XBoxIO.XBox.Reset();
+            XBoxIO.FindXBox();
+
+            CompletedOperation();
         }
 
         void cmdShutdown_Click(object sender, EventArgs e)
         {
-            this.Enabled = false;
+            if (FindXbox() == false) return;
+
             try
-            { Program.XBox.Shutdown(); }
+            { XBoxIO.XBox.Shutdown(); }
             catch { }
             finally
             { Application.Exit(); }
@@ -331,24 +298,31 @@ namespace Yelo.Neighborhood
 
         #region Tray
         void cmdEjectTray_Click(object sender, EventArgs e)
-        { Program.XBox.EjectTray(); }
+        {
+            if (FindXbox() == false) return;
+            XBoxIO.XBox.EjectTray();
+            CompletedOperation();
+        }
 
         void cmdLoadTray_Click(object sender, EventArgs e)
-        { Program.XBox.LoadTray(); }
+        {
+            if (FindXbox() == false) return;
+            XBoxIO.XBox.LoadTray();
+            CompletedOperation();
+        }
         #endregion
 
         #region Update
         void cmdCheckForUpdates_Click(object sender, EventArgs e)
         {
-            Updater.Jobs.VersionDownloadDirectory = new Uri("http://open-sauce.googlecode.com/hg/Xbox/Xbox1/Yelo%20Neighborhood/Latest%20Release/");
-            Updater.Jobs.UpdateDownloadDirectory = new Uri("http://open-sauce.googlecode.com/files/");
-            Updater.Jobs.ProgramName = "Yelo%20Neighborhood";
-            Updater.Jobs.CheckForUpdates(Program.Version);
+            Cache.CheckForUpdate();
         }
         #endregion
 
         void listFiles_ItemActivate(object sender, EventArgs e)
         {
+            if (FindXbox() == false) return;
+
             FileInformation selectedFile = (FileInformation)listFiles.SelectedItems[0].Tag;
             if (selectedFile == null || selectedFile.Attributes == FileAttributes.Directory)
             {
@@ -369,33 +343,23 @@ namespace Yelo.Neighborhood
                         lblStatus.Text = "Launching: " + fi.Name;
                         probar.Style = ProgressBarStyle.Marquee;
                         this.Enabled = false;
-                        launchTitleWorker.RunWorkerAsync(new LaunchInfo() { FileInfo = fi });
+                        launchTitleWorker.RunWorkerAsync(new XBoxIO.LaunchInfo(fi));
                         break;
                 }
             }
-        }
 
-        void screenshotToolToolStripMenuItem_Click(object sender, EventArgs e)
-        { Program.ScreenshotTool.ShowDialog(); }
-
-        class LaunchInfo
-        {
-            public FileInfo FileInfo { get; set; }
+            CompletedOperation();
         }
 
         void launchTitleWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            LaunchInfo lmi = (LaunchInfo)e.Argument;
-            Program.XBox.LaunchTitle(lmi.FileInfo.FullName);
+            XBoxIO.LaunchInfo lmi = (XBoxIO.LaunchInfo)e.Argument;
+            XBoxIO.XBox.LaunchTitle(lmi.FileInfo.FullName);
         }
 
         void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (!Program.XBox.Ping()) new Settings().ShowDialog();
-
-            this.Enabled = true;
-            probar.Style = ProgressBarStyle.Blocks;
-            lblStatus.Text = "Ready.";
+            CompletedOperation();
             RefreshFiles();
         }
 
@@ -411,33 +375,14 @@ namespace Yelo.Neighborhood
 
         void deleteFileWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            this.Enabled = false;
             string workingDir = CurrentDirectory;
             List<FileInformation> files = (List<FileInformation>)e.Argument;
             foreach (FileInformation fi in files)
             {
                 lblStatus.Text = "Deleting: " + fi.Name;
-                if (fi.Attributes == FileAttributes.Directory) DeleteDirectory(fi, workingDir);
-                else Program.XBox.DeleteFile(Path.Combine(workingDir, fi.Name));
+                if (fi.Attributes == FileAttributes.Directory) XBoxIO.DeleteDirectory(fi, workingDir, StatusChanged);
+                else XBoxIO.XBox.DeleteFile(Path.Combine(workingDir, fi.Name));
             }
-        }
-
-        void DeleteDirectory(FileInformation dir, string workingDir)
-        {
-            List<FileInformation> files = Program.XBox.GetDirectoryList(Path.Combine(workingDir, dir.Name));
-            foreach (FileInformation fi in files)
-            {
-                lblStatus.Text = "Deleting: " + fi.Name;
-                if (fi.Attributes == FileAttributes.Directory) DeleteDirectory(fi, Path.Combine(workingDir, dir.Name));
-                else Program.XBox.DeleteFile(Path.Combine(Path.Combine(workingDir, dir.Name), fi.Name));
-            }
-            Program.XBox.DeleteDirectory(Path.Combine(workingDir, dir.Name));
-        }
-
-        void xBoxToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
-        {
-            if (Program.XBox.Ping() && Program.XBox.GetTrayState() != TrayState.Open) cmdEjectTray.Visible = true;
-            else cmdEjectTray.Visible = false;
         }
 
         void listFiles_AfterLabelEdit(object sender, LabelEditEventArgs e)
@@ -449,13 +394,17 @@ namespace Yelo.Neighborhood
                 return;
             }
 
+            if (FindXbox() == false) return;
+
             if (listFiles.Items[e.Item].Text == "")
-                Program.XBox.CreateDirectory(Path.Combine(CurrentDirectory, e.Label));
+                XBoxIO.XBox.CreateDirectory(Path.Combine(CurrentDirectory, e.Label));
             else
             {
-                Program.XBox.RenameFile(Path.Combine(CurrentDirectory, listFiles.Items[e.Item].Text), Path.Combine(CurrentDirectory, e.Label));
+                XBoxIO.XBox.RenameFile(Path.Combine(CurrentDirectory, listFiles.Items[e.Item].Text), Path.Combine(CurrentDirectory, e.Label));
                 ((FileInformation)listFiles.Items[e.Item].Tag).Name = e.Label;
             }
+
+            CompletedOperation();
         }
 
         void cmdRename_Click(object sender, EventArgs e)
@@ -465,6 +414,8 @@ namespace Yelo.Neighborhood
         {
             if (CurrentDirectory == "") return;
             if (MessageBox.Show("Would You Like To Permanently Delete " + listFiles.SelectedItems.Count + " File(s)?", "Comfirm.", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No) return;
+            if (FindXbox() == false) return;
+
             List<FileInformation> files = new List<FileInformation>();
             foreach (ListViewItem lvt in listFiles.SelectedItems)
                 files.Add((FileInformation)lvt.Tag);
@@ -508,12 +459,14 @@ namespace Yelo.Neighborhood
 
         void ExecutableLaunch_Click(object sender, EventArgs e)
         {
+            if (FindXbox() == false) return;
+
             Executable exe = (Executable)((ToolStripMenuItem)sender).Tag;
             FileInfo fi = new FileInfo(exe.Filename);
             lblStatus.Text = "Launching: " + fi.Name;
             probar.Style = ProgressBarStyle.Marquee;
-            this.Enabled = false;
-            launchTitleWorker.RunWorkerAsync(new LaunchInfo() { FileInfo = fi });
+            
+            launchTitleWorker.RunWorkerAsync(new XBoxIO.LaunchInfo(fi));
         }
 
         void ExecutableScript_Click(object sender, EventArgs e)
@@ -526,15 +479,6 @@ namespace Yelo.Neighborhood
         {
             Executable.Script cmd = (Executable.Script)((ToolStripMenuItem)sender).Tag;
             cmd.Run(Path.GetFileNameWithoutExtension(listFiles.SelectedItems[0].Text));
-        }
-
-        void ExecutableFileModule_Click(object sender, EventArgs e)
-        {
-            LaunchInfo li = (LaunchInfo)((ToolStripMenuItem)sender).Tag;
-            lblStatus.Text = "Launching: " + li.FileInfo.Name;
-            probar.Style = ProgressBarStyle.Marquee;
-            this.Enabled = false;
-            launchTitleWorker.RunWorkerAsync(li);
         }
 
         void LoadFileScripts(string filename, string fileType)
@@ -662,18 +606,25 @@ namespace Yelo.Neighborhood
         {
             if (MessageBox.Show("Are You Sure You Want To Synchronize The XBox System Time With The Computer's Current Time?", "Confirm Synchronization", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                if (!Program.XBox.Ping()) new Settings().ShowDialog();
-                Program.XBox.SynchronizeTime();
+                if (FindXbox() == false) return;
+                XBoxIO.XBox.SynchronizeTime();
+                CompletedOperation();
             }
         }
 
         private void lEDStateToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!Program.XBox.Ping()) new Settings().ShowDialog();
-            Program.LEDStateChanger.ShowDialog(); 
+            if (FindXbox() == false) return;
+            Program.LEDStateChanger.ShowDialog();
+            CompletedOperation();
         }
 
         private void memoryHackerToolStripMenuItem_Click(object sender, EventArgs e)
         { Program.MemoryHacker.ShowDialog(); }
+
+        private void StatusChanged(string status)
+        {
+            lblStatus.Text = status;
+        }
     };
 }

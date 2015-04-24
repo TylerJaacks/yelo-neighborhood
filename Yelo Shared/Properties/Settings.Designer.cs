@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Yelo.Neighborhood.Properties {
+namespace Yelo.Shared.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

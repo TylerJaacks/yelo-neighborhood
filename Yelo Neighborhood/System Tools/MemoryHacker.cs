@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Yelo.Debug;
 using System.IO;
+using Yelo.Shared;
 
 namespace Yelo.Neighborhood.System_Tools
 {
@@ -40,6 +41,7 @@ namespace Yelo.Neighborhood.System_Tools
 
         private void cmdBegin_Click(object sender, EventArgs e)
         {
+            Enabled = false;
             lstOffsets.DataSource = null;
             
             uint baseAddress = ((ModuleInfo)cboModule.SelectedItem).BaseAddress;
@@ -67,15 +69,17 @@ namespace Yelo.Neighborhood.System_Tools
             const uint BlockSize = 512;
             uint blockCount = size / BlockSize;
             uint offset = 0;
-            for (int i = 0; i < blockCount; i++)
+            //for (int i = 0; i < blockCount; i++)
             {
-                BinaryReader br = new BinaryReader(new MemoryStream(Program.XBox.GetMemory(baseAddress + offset, BlockSize)));
+                BinaryReader br = new BinaryReader(new MemoryStream(XBoxIO.XBox.GetMemory(baseAddress + offset, size)));
 
-                probar.Value = (int)((i * 100) / (blockCount * 100));
+                //probar.Value = (int)((i * 100) / (blockCount * 100));
                 Application.DoEvents();
 
                 while (br.BaseStream.Position < br.BaseStream.Length)//offset < size)
                 {
+                    probar.Value = (int)(((float)br.BaseStream.Position / (float)br.BaseStream.Length) * 100.0f);
+
                     switch (type)
                     {
                         case ValueTypes.Byte:
@@ -114,9 +118,24 @@ namespace Yelo.Neighborhood.System_Tools
                 }
 
                 br.Close();
+
+                //WaitForSeconds(10.0f);
             }
             lstOffsets.DataSource = MemoryInfo;
             probar.Value = 0;
+            Enabled = true;
+        }
+
+        void WaitForSeconds(float seconds)
+        {
+            TimeSpan start = DateTime.Now.TimeOfDay;
+            while (true)
+            {
+                TimeSpan now = DateTime.Now.TimeOfDay;
+                if ((now.Subtract(start)).TotalSeconds < seconds)
+                    break;
+                Application.DoEvents();
+            }
         }
 
         private void cmdReduceList_Click(object sender, EventArgs e)
@@ -125,6 +144,6 @@ namespace Yelo.Neighborhood.System_Tools
         }
 
         private void MemoryHacker_Shown(object sender, EventArgs e)
-        { cboModule.DataSource = Program.XBox.Modules; }
+        { cboModule.DataSource = XBoxIO.XBox.Modules; }
     }
 }

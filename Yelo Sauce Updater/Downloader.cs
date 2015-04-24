@@ -12,6 +12,12 @@ namespace Yelo.Updater
     {
         public string Version { get; set; }
 
+        public string UpdateFilename { get { return Version + ".zip"; } }
+
+        public string UpdateURL { get { return UpdatingTasks.UpdateDownloadDirectory + UpdateFilename; } }
+
+        private string DownloadedUpdateFilename { get { return Application.StartupPath + "\\Update.zip"; } }
+
         public Downloader(string version)
         {
             InitializeComponent();
@@ -23,13 +29,13 @@ namespace Yelo.Updater
         {
             WebClient wc = new WebClient();
 
-            using (var sr = new StreamReader(wc.OpenRead(new Uri(Jobs.VersionDownloadDirectory, "ChangeLog.txt"))))
+            using (var sr = new StreamReader(wc.OpenRead(new Uri(UpdatingTasks.VersionDownloadDirectory, "ChangeLog.txt"))))
 			{
 				lblChangeLog.Text = sr.ReadToEnd();
 			}
 
             wc.DownloadFileCompleted += new AsyncCompletedEventHandler(wc_DownloadFileCompleted);
-            wc.DownloadFileAsync(new Uri(Jobs.UpdateDownloadDirectory, Jobs.ProgramName + "%20v" + Version + "%20Update.zip"), Application.StartupPath + "\\Update.zip");
+            wc.DownloadFileAsync(new Uri(UpdatingTasks.UpdateDownloadDirectory, UpdateFilename), DownloadedUpdateFilename);
         }
 
         void wc_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
@@ -41,7 +47,7 @@ namespace Yelo.Updater
             }
             lblStatus.Text = "Decompressing...";
             probar.Style = ProgressBarStyle.Blocks;
-            SevenZipExtractor extractor = new SevenZip.SevenZipExtractor(Application.StartupPath + "\\Update.zip");
+            SevenZipExtractor extractor = new SevenZip.SevenZipExtractor(DownloadedUpdateFilename);
             extractor.Extracting += new EventHandler<ProgressEventArgs>(extractor_Extracting);
             extractor.ExtractionFinished += new EventHandler<EventArgs>(extractor_ExtractionFinished);
 
@@ -59,11 +65,11 @@ namespace Yelo.Updater
 
         private void cmdClose_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(Application.StartupPath + "\\" + Jobs.ProgramName.Replace("%20", " ") + ".exe");
+            System.Diagnostics.Process.Start(UpdatingTasks.ProgramLocation);
             Application.Exit();
         }
 
         private void Downloader_FormClosed(object sender, FormClosedEventArgs e)
-        { File.Delete(Application.StartupPath + "\\Update.zip"); }
+        { File.Delete(DownloadedUpdateFilename); }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Yelo.Neighborhood
+﻿namespace Yelo.Shared
 {
     partial class XBoxLocator
     {

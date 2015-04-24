@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace Yelo.Neighborhood
+namespace Yelo.Shared
 {
     public partial class XBoxLocator : Form
     {

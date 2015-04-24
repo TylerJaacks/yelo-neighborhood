@@ -534,12 +534,7 @@ namespace Yelo.Debug
         {
             // load settings file
             var xmlDoc = new System.Xml.XmlDocument();
-            xmlDoc.Load("Yelo.DebugSettings.xml");
-
-            // check that setting and assembly versions match
-            string assemblyVersion = System.Reflection.Assembly.GetExecutingAssembly().FullName.Substring(19, 7);
-            string settingsVersion = xmlDoc.GetElementsByTagName("Version")[0].InnerText;
-            if (assemblyVersion != settingsVersion) throw new ApiException("Yelo.Debug version does not match the version of the settings file.");
+            xmlDoc.Load("YeloDebugSettings.xml");
 
             // get settings information
             xdkRegistryPath = xmlDoc.GetElementsByTagName("XdkRegistryPath")[0].InnerText;

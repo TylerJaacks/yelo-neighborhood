@@ -3,14 +3,16 @@ using System.Windows.Forms;
 using System.Net;
 using System.IO;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Yelo.Updater
 {
-    public static class Jobs
+    public static class UpdatingTasks
     {
         public static Uri VersionDownloadDirectory { get; set; }
         public static Uri UpdateDownloadDirectory { get; set; }
-        public static string ProgramName { get; set; }
+        public static string ProgramLocation { get; set; }
+        public static int CurrentVersion { get; set; }
 
         /// <summary>
         /// The main entry point for the application.
@@ -23,18 +25,18 @@ namespace Yelo.Updater
             {
                 VersionDownloadDirectory = new Uri(args[0]);
                 UpdateDownloadDirectory = new Uri(args[1]);
-                ProgramName = args[2];
+                ProgramLocation = args[2];
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new Downloader(args[3]));
             }
         }
 
-        public static void CheckForUpdates(int versionNumber)
+        public static void CheckForUpdates()
         { 
             WebClient wc = new WebClient();
             wc.OpenReadCompleted += new OpenReadCompletedEventHandler(wc_OpenReadCompleted);
-            wc.OpenReadAsync(new Uri(VersionDownloadDirectory, "Version.txt"), versionNumber);
+            wc.OpenReadAsync(new Uri(VersionDownloadDirectory, "Version.txt"));
         }
 
         static void wc_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e)
@@ -45,13 +47,13 @@ namespace Yelo.Updater
 				latest = Convert.ToInt32(sr.ReadLine());
 			}
 
-            if (latest > (int)e.UserState)
+            if (latest > CurrentVersion)
             {
                 if (MessageBox.Show("Update Is Available, Download Now?", "Update Available", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
                 {
-                    ProcessStartInfo startInfo = new ProcessStartInfo(Application.StartupPath + "\\Updater.exe");
-                    startInfo.Arguments = string.Format("{0} {1} {2} {3}",
-                        VersionDownloadDirectory.OriginalString, UpdateDownloadDirectory.OriginalString, ProgramName, latest.ToString());
+                    ProcessStartInfo startInfo = new ProcessStartInfo(Assembly.GetExecutingAssembly().Location); 
+                    startInfo.Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\"",
+                        VersionDownloadDirectory.OriginalString, UpdateDownloadDirectory.OriginalString, ProgramLocation, latest.ToString());
 
                     Process.Start(startInfo);
                     Application.Exit();

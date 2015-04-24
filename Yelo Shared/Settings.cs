@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace Yelo.Neighborhood
+namespace Yelo.Shared
 {
     public partial class Settings : Form
     {
@@ -26,16 +26,13 @@ namespace Yelo.Neighborhood
             Hide();
             DialogResult = DialogResult.OK;
 
-            if (checkAutoDiscover.Checked) Program.FindXBox();
-            else Program.FindXBox(txtIP.Text);
+            XBoxIO.AutoConnect = checkAutoDiscover.Checked;
+            XBoxIO.SelectedIP = txtIP.Text;
         }
 
         private void cmdCheckForUpdates_Click(object sender, EventArgs e)
         {
-            Updater.Jobs.VersionDownloadDirectory = new Uri("http://open-sauce.googlecode.com/hg/Xbox/Xbox1/Yelo%20Neighborhood/Latest%20Release/");
-            Updater.Jobs.UpdateDownloadDirectory = new Uri("http://open-sauce.googlecode.com/files/");
-            Updater.Jobs.ProgramName = "Yelo%20Neighborhood";
-            Updater.Jobs.CheckForUpdates(Program.Version);
+            Cache.CheckForUpdate();
         }
     }
 }

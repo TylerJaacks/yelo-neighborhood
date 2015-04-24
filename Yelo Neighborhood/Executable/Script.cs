@@ -6,6 +6,7 @@ using Microsoft.CSharp;
 using System.CodeDom.Compiler;
 using System.Windows.Forms;
 using System.Reflection;
+using Yelo.Shared;
 
 namespace Yelo.Neighborhood
 {
@@ -63,7 +64,7 @@ namespace Yelo.Neighborhood
                 }
                 
                 Type scripting = results.CompiledAssembly.GetExportedTypes()[0];
-                scripting.InvokeMember("Script", BindingFlags.Default | BindingFlags.InvokeMethod, null, null, new object[] { Program.XBox, filename });
+                scripting.InvokeMember("Script", BindingFlags.Default | BindingFlags.InvokeMethod, null, null, new object[] { XBoxIO.XBox, filename });
             }
         }
     };

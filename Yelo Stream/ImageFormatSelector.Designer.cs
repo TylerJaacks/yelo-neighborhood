@@ -1,4 +1,4 @@
-﻿namespace Yelo.Neighborhood
+﻿namespace Yelo.Stream
 {
     partial class ImageFormatSelector
     {

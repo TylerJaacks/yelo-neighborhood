@@ -7,27 +7,17 @@ using System.Xml;
 using System.IO;
 using Yelo.Debug.Exceptions;
 using Yelo.Neighborhood.System_Tools;
+using Yelo.Shared;
 
 namespace Yelo.Neighborhood
 {
     static class Program
     {
-        public static int Version { get { return 11; } }
-
-        public static Xbox XBox { get { return _xbox; } }
-        static Xbox _xbox;
-
-        public static Main MainWindow { get { return _mainWindow; } }
-        static Main _mainWindow;
-
-        public static ScreenshotTool ScreenshotTool { get { return _screenshotTool; } }
-        static ScreenshotTool _screenshotTool;
+        public static XBoxExplorer MainWindow { get { return _mainWindow; } }
+        static XBoxExplorer _mainWindow;
 
         public static MemoryHacker MemoryHacker { get { return _memoryHacker; } }
         static MemoryHacker _memoryHacker;
-
-        public static XBoxLocator XBoxLocator { get { return _xboxLocator; } }
-        static XBoxLocator _xboxLocator;
 
         public static LEDStateChanger LEDStateChanger { get { return _LEDStateChanger; } }
         static LEDStateChanger _LEDStateChanger;
@@ -47,13 +37,22 @@ namespace Yelo.Neighborhood
 
             LoadExecutables();
 
-            _xboxLocator = new XBoxLocator();
-            _screenshotTool = new ScreenshotTool();
             _LEDStateChanger = new LEDStateChanger();
             _memoryHacker = new MemoryHacker();
 
-            if (Properties.Settings.Default.AutoDiscover) FindXBox();
-            else FindXBox(Properties.Settings.Default.XBoxIP);
+            XBoxIO.LoadSettings();
+            if (XBoxIO.FindXBox())
+                ShowXBoxExplorer();
+        }
+
+        static void ShowXBoxExplorer()
+        {
+            if (_mainWindow == null)
+            {
+                _mainWindow = new XBoxExplorer();
+                _mainWindow.ShowDialog();
+                XBoxIO.XBox.Disconnect();
+            }
         }
 
         public static void LoadExecutables()
@@ -95,68 +94,6 @@ namespace Yelo.Neighborhood
 					}
 				}
 			}
-        }
-
-        static void AsyncConnect(string xbox)
-        { new Thread(new ParameterizedThreadStart(Connect)).Start(xbox); }
-
-        static void AsyncConnect()
-        { new Thread(new ThreadStart(Connect)).Start(); }
-
-        static void Connect(object xbox)
-        {
-            try
-            { _xbox.Connect((string)xbox); }
-            catch (Exception e)
-            { MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation); }
-            finally
-            { _xboxLocator.Hide(); }
-        }
-
-        static void Connect()
-        {
-            try
-            { _xbox.Connect(); }
-            catch (Exception e)
-            { MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation); }
-            finally
-            { _xboxLocator.Hide(); }
-        }
-
-        public static void FindXBox()
-        {
-             _xbox = new Xbox();
-             AsyncConnect();
-            _xboxLocator.ShowDialog();
-
-            if (XBox.Connected)
-            {
-                if (_mainWindow == null)
-                {
-                    _mainWindow = new Main();
-                    _mainWindow.ShowDialog();
-                    XBox.Disconnect();
-                }
-            }
-            else new Settings().ShowDialog();
-        }
-
-        public static void FindXBox(string xbox)
-        {
-            _xbox = new Xbox();
-            AsyncConnect(xbox);
-            _xboxLocator.ShowDialog();
-
-            if (XBox.Connected)
-            {
-                if (_mainWindow == null)
-                {
-                    _mainWindow = new Main();
-                    _mainWindow.ShowDialog();
-                    XBox.Disconnect();
-                }
-            }
-            else new Settings().ShowDialog();
         }
     };
 }

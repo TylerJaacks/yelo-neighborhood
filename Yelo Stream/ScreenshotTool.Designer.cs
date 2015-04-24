@@ -1,4 +1,4 @@
-﻿namespace Yelo.Neighborhood
+﻿namespace Yelo.Stream
 {
     partial class ScreenshotTool
     {
@@ -35,6 +35,8 @@
             this.checkLiveStream = new System.Windows.Forms.ToolStripMenuItem();
             this.captureF5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cboViewStyle = new System.Windows.Forms.ToolStripComboBox();
+            this.cboStreamSize = new System.Windows.Forms.ToolStripComboBox();
+            this.cboFrameInterval = new System.Windows.Forms.ToolStripComboBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.imageBox = new System.Windows.Forms.PictureBox();
             this.listImages = new System.Windows.Forms.ListView();
@@ -56,7 +58,9 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.checkLiveStream,
             this.captureF5ToolStripMenuItem,
-            this.cboViewStyle});
+            this.cboViewStyle,
+            this.cboStreamSize,
+            this.cboFrameInterval});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(809, 27);
@@ -85,6 +89,20 @@
             this.cboViewStyle.Name = "cboViewStyle";
             this.cboViewStyle.Size = new System.Drawing.Size(121, 23);
             this.cboViewStyle.SelectedIndexChanged += new System.EventHandler(this.cboViewStyle_SelectedIndexChanged);
+            // 
+            // cboStreamSize
+            // 
+            this.cboStreamSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboStreamSize.Name = "cboStreamSize";
+            this.cboStreamSize.Size = new System.Drawing.Size(121, 23);
+            this.cboStreamSize.SelectedIndexChanged += new System.EventHandler(this.cboStreamSize_SelectedIndexChanged);
+            // 
+            // cboFrameInterval
+            // 
+            this.cboFrameInterval.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboFrameInterval.Name = "cboFrameInterval";
+            this.cboFrameInterval.Size = new System.Drawing.Size(121, 23);
+            this.cboFrameInterval.SelectedIndexChanged += new System.EventHandler(this.cboFrameInterval_SelectedIndexChanged);
             // 
             // splitContainer1
             // 
@@ -179,8 +197,7 @@
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "ScreenshotTool";
-            this.Text = "Screenshot Tool";
-            this.TopMost = true;
+            this.Text = "Yelo Stream";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ScreenshotTool_FormClosing);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ScreenshotTool_KeyDown);
             this.menuStrip1.ResumeLayout(false);
@@ -211,5 +228,7 @@
         public System.Windows.Forms.ToolStripMenuItem checkLiveStream;
         private System.Windows.Forms.FolderBrowserDialog FBD;
         private System.Windows.Forms.ToolStripComboBox cboViewStyle;
+        private System.Windows.Forms.ToolStripComboBox cboStreamSize;
+        private System.Windows.Forms.ToolStripComboBox cboFrameInterval;
     }
 }

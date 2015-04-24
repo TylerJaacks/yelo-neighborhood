@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using Yelo.Debug;
+using Yelo.Shared;
 
 namespace Yelo.Neighborhood
 {
@@ -22,8 +23,8 @@ namespace Yelo.Neighborhood
 
         private void cmdApply_Click(object sender, EventArgs e)
         {
-            if (!Program.XBox.Ping()) new Settings().ShowDialog();
-            Program.XBox.SetLEDState((LEDState)cboState1.SelectedItem, (LEDState)cboState2.SelectedItem, (LEDState)cboState3.SelectedItem, (LEDState)cboState4.SelectedItem); 
+            if (XBoxIO.FindXBox() == false) return;
+            XBoxIO.XBox.SetLEDState((LEDState)cboState1.SelectedItem, (LEDState)cboState2.SelectedItem, (LEDState)cboState3.SelectedItem, (LEDState)cboState4.SelectedItem); 
         }
     }
 }

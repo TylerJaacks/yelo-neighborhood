@@ -33,7 +33,13 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
-  <Import Project="$(SolutionDir)Yelo Sauce.Cs.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <DocumentationFile />
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -71,17 +77,11 @@
     <Compile Include="System Tools\MemoryHacker.Designer.cs">
       <DependentUpon>MemoryHacker.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screenshot Tools\ImageFormatSelector.cs">
+    <Compile Include="XBoxExplorer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Screenshot Tools\ImageFormatSelector.Designer.cs">
-      <DependentUpon>ImageFormatSelector.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Main.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Main.Designer.cs">
-      <DependentUpon>Main.cs</DependentUpon>
+    <Compile Include="XBoxExplorer.Designer.cs">
+      <DependentUpon>XBoxExplorer.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -101,12 +101,8 @@
       <DependentUpon>MemoryHacker.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Screenshot Tools\ImageFormatSelector.resx">
-      <DependentUpon>ImageFormatSelector.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Main.resx">
-      <DependentUpon>Main.cs</DependentUpon>
+    <EmbeddedResource Include="XBoxExplorer.resx">
+      <DependentUpon>XBoxExplorer.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -114,20 +110,8 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Screenshot Tools\ScreenshotTool.resx">
-      <DependentUpon>ScreenshotTool.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Settings.resx">
-      <DependentUpon>Settings.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="System Tools\SystemProperties.resx">
       <DependentUpon>SystemProperties.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="XBoxLocator.resx">
-      <DependentUpon>XBoxLocator.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
@@ -136,38 +120,11 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <Compile Include="Screenshot Tools\ScreenshotTool.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Screenshot Tools\ScreenshotTool.Designer.cs">
-      <DependentUpon>ScreenshotTool.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Settings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Settings.Designer.cs">
-      <DependentUpon>Settings.cs</DependentUpon>
-    </Compile>
     <Compile Include="System Tools\SystemProperties.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="System Tools\SystemProperties.Designer.cs">
       <DependentUpon>SystemProperties.cs</DependentUpon>
-    </Compile>
-    <Compile Include="XBoxLocator.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="XBoxLocator.Designer.cs">
-      <DependentUpon>XBoxLocator.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -178,12 +135,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Yelo Debug\Yelo Debug.csproj">
-      <Project>{F5DB1C08-E8A7-4618-9E0E-0CC225597C75}</Project>
-      <Name>YeloDebug</Name>
+      <Project>{f5db1c08-e8a7-4618-9e0e-0cc225597c75}</Project>
+      <Name>Yelo Debug</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Yelo Sauce Updater\Yelo Sauce Updater.csproj">
-      <Project>{94A21AF4-C543-47FD-99C5-B59541F77157}</Project>
-      <Name>Yelo Neighborhood Updater</Name>
+    <ProjectReference Include="..\Yelo Shared\Yelo Shared.csproj">
+      <Project>{aaf2dddf-ac76-4ab0-bf5b-a1cf680163cd}</Project>
+      <Name>Yelo Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

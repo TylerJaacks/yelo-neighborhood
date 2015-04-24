@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using Yelo.Shared;
 
 namespace Yelo.Neighborhood
 {
@@ -14,8 +15,8 @@ namespace Yelo.Neighborhood
         {
             InitializeComponent();
 
-            if (!Program.XBox.Ping()) new Settings().ShowDialog();
-            xboxProperties.SelectedObject = Program.XBox;
+            if (XBoxIO.FindXBox() == false) Close();
+            xboxProperties.SelectedObject = XBoxIO.XBox;
         }
     }
 }

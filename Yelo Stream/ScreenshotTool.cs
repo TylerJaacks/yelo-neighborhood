@@ -6,8 +6,9 @@ using System.Threading;
 using Yelo.Debug;
 using System.IO;
 using System.Drawing;
+using Yelo.Shared;
 
-namespace Yelo.Neighborhood
+namespace Yelo.Stream
 {
     public partial class ScreenshotTool : Form
     {
@@ -17,22 +18,42 @@ namespace Yelo.Neighborhood
         public ScreenshotTool()
         {
             InitializeComponent();
+
+            Text = XBoxIO.XBox.DebugName + " - " + XBoxIO.XBox.DebugIP + " - Yelo Stream v" + Cache.Version;
+
             cboViewStyle.Items.Add(ImageLayout.Center);
             cboViewStyle.Items.Add(ImageLayout.Stretch);
-            cboViewStyle.SelectedIndex = 0;
+            cboViewStyle.Items.Add(ImageLayout.Zoom);
+            cboViewStyle.SelectedItem = ImageLayout.Zoom;
+
+            cboStreamSize.Items.Add(XboxVideoStream.VideoSize.Small);
+            cboStreamSize.Items.Add(XboxVideoStream.VideoSize.Medium);
+            cboStreamSize.Items.Add(XboxVideoStream.VideoSize.Full);
+            cboStreamSize.SelectedItem = XboxVideoStream.VideoSize.Medium;
+
+            foreach (Enum e in Enum.GetValues(typeof(XboxVideoStream.VideoPresentationInterval)))
+                cboFrameInterval.Items.Add(e);
+            cboFrameInterval.SelectedItem = XboxVideoStream.VideoPresentationInterval.Immediate;
+
+            StartStream();
+            LiveStreamThread = new Thread(LiveStreamLoop);
+            LiveStreamThread.Start();
         }
 
         public void TakeScreenshot()
         {
-            if (!LiveStreamRunning && !Program.XBox.Ping()) new Settings().ShowDialog();
+            if (!LiveStreamRunning && XBoxIO.XBox.Connected == false) return;
+
             DateTime now = DateTime.Now;
             listImages.Items.Add(new ListViewItem(now.ToString() + " " + now.Second.ToString() + "." + now.Millisecond.ToString(), imageList.Images.Count, listImages.Groups[0]));
-            Pauser.Reset();
-            if(LiveStreamRunning) Waiter.WaitOne();
-			Image screenshot = Program.XBox.Screenshot();
-            Pauser.Set();
-            Images.Add(screenshot);
-            imageList.Images.Add(screenshot);
+
+            lock (XBoxIO.XBox)
+            {
+                Image screenshot = XBoxIO.XBox.Screenshot();
+                Images.Add(screenshot);
+                imageList.Images.Add(screenshot);
+            }
+
             if (!checkLiveStream.Checked)
             {
                 listImages.SelectedItems.Clear();
@@ -62,47 +83,89 @@ namespace Yelo.Neighborhood
         void checkLiveStream_CheckedChanged(object sender, EventArgs e)
         {
             if (checkLiveStream.Checked)
-            {
-                if (!Program.XBox.Ping()) new Settings().ShowDialog();
-                checkLiveStream.Text = "Live Stream (On)";
-                new Thread(new ParameterizedThreadStart(LiveStream)).Start(imageBox);
-            }
+                ResumeStream();
             else
+                StopStream();
+        }
+
+        void StartStream()
+        {
+            lock (XBoxIO.XBox)
             {
-                LiveStreamRunning = false;
-                checkLiveStream.Text = "Live Stream (Off)";
+                if (XBoxIO.XBox.Connected == false && XBoxIO.FindXBox() == false)
+                {
+                    checkLiveStream.Text = "Live Stream (Off)";
+                    return;
+                }
+
+                if (videoStream != null)
+                    videoStream.End();
+
+                videoStream = new XboxVideoStream(XBoxIO.XBox,
+                    (XboxVideoStream.VideoSize)cboStreamSize.SelectedItem,
+                    XboxVideoStream.VideoQuality.Regular,
+                    (XboxVideoStream.VideoPresentationInterval)cboFrameInterval.SelectedItem);
+
+                videoStream.Begin();
+
+                checkLiveStream.Text = "Live Stream (On)";
             }
         }
 
-        static bool LiveStreamRunning = false;
-        static ManualResetEvent Pauser = new ManualResetEvent(true);
-        static ManualResetEvent Waiter = new ManualResetEvent(false);
-        static void LiveStream(object pictureBox)
+        void ResumeStream()
         {
-            PictureBox imageBox = (PictureBox)pictureBox;
-            Program.XBox.SetFileCacheSize(1);
-            XboxVideoStream xvs = new XboxVideoStream(Program.XBox, XboxVideoStream.VideoSize.Medium, XboxVideoStream.VideoQuality.Regular, XboxVideoStream.VideoPresentationInterval.Immediate);
+            lock (XBoxIO.XBox)
+            {
+                if (XBoxIO.XBox.Connected == false && XBoxIO.FindXBox() == false)
+                {
+                    checkLiveStream.Text = "Live Stream (Off)";
+                    return;
+                }
+
+                LiveStreamPaused = false;
+                videoStream.Restart();
+                checkLiveStream.Text = "Live Stream (On)";
+            }
+        }
+
+        void StopStream()
+        {
+            videoStream.End();
+            LiveStreamPaused = true;
+            checkLiveStream.Text = "Live Stream (Off)";
+        }
+
+        Thread LiveStreamThread;
+        bool LiveStreamRunning = false;
+        bool LiveStreamPaused = false;
+        XboxVideoStream videoStream;
+        void LiveStreamLoop()
+        {
             LiveStreamRunning = true;
-            xvs.Begin();
             while (LiveStreamRunning)
             {
-                Waiter.Reset();
-                imageBox.BackgroundImage = xvs.NextFrame();//imageBox.BackgroundImage = Program.XBox.Screenshot();
-                Waiter.Set();
-                Pauser.WaitOne();
+                if (videoStream.IsActive)
+                {
+                    lock (XBoxIO.XBox)
+                    {
+                        imageBox.BackgroundImage = videoStream.NextFrame();
+                    }
+                }
+                else if (LiveStreamPaused == false)
+                {
+                    ResumeStream();
+                }
             }
-            xvs.End();
-            Program.ScreenshotTool.checkLiveStream.Checked = false;
         }
 
         void ScreenshotTool_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (e.CloseReason == CloseReason.UserClosing)
+            lock (XBoxIO.XBox)
             {
-                e.Cancel = true;
-                Hide();
+                videoStream.End();
+                LiveStreamRunning = false;
+                XBoxIO.XBox.Disconnect();
             }
-            LiveStreamRunning = false;
         }
 
         void cmdSaveChecked_Click(object sender, EventArgs e)
@@ -146,6 +209,18 @@ namespace Yelo.Neighborhood
         void cboViewStyle_SelectedIndexChanged(object sender, EventArgs e)
         {
             imageBox.BackgroundImageLayout = (ImageLayout)cboViewStyle.SelectedItem;
+        }
+
+        private void cboStreamSize_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (LiveStreamRunning)
+                StartStream();
+        }
+
+        private void cboFrameInterval_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (LiveStreamRunning)
+                StartStream();
         }
     };
 }
