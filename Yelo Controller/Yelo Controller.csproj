@@ -49,27 +49,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Input.cs" />
-    <Compile Include="Prompt.cs">
+    <Compile Include="XBoxController.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Prompt.Designer.cs">
-      <DependentUpon>Prompt.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Main.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Main.Designer.cs">
-      <DependentUpon>Main.cs</DependentUpon>
+    <Compile Include="XBoxController.Designer.cs">
+      <DependentUpon>XBoxController.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Prompt.resx">
+    <EmbeddedResource Include="XBoxController.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>Prompt.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Main.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>Main.cs</DependentUpon>
+      <DependentUpon>XBoxController.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -95,6 +85,10 @@
     <ProjectReference Include="..\Yelo Debug\Yelo Debug.csproj">
       <Project>{F5DB1C08-E8A7-4618-9E0E-0CC225597C75}</Project>
       <Name>YeloDebug</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Yelo Shared\Yelo Shared.csproj">
+      <Project>{aaf2dddf-ac76-4ab0-bf5b-a1cf680163cd}</Project>
+      <Name>Yelo Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
