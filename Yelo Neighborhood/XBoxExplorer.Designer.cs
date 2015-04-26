@@ -51,7 +51,6 @@
             this.imgLstFiles = new System.Windows.Forms.ImageList(this.components);
             this.menuStrip2 = new System.Windows.Forms.MenuStrip();
             this.xBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.systemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -74,6 +73,9 @@
             this.deleteFileWorker = new System.ComponentModel.BackgroundWorker();
             this.SFD = new System.Windows.Forms.SaveFileDialog();
             this.downloadFileWorker = new System.ComponentModel.BackgroundWorker();
+            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.yeloStreamToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.yeloControllerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.mnuFiles.SuspendLayout();
@@ -252,7 +254,8 @@
             this.menuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.xBoxToolStripMenuItem,
             this.cmdCheckForUpdates,
-            this.mnuScripts});
+            this.mnuScripts,
+            this.toolsToolStripMenuItem});
             this.menuStrip2.Location = new System.Drawing.Point(0, 0);
             this.menuStrip2.Name = "menuStrip2";
             this.menuStrip2.Size = new System.Drawing.Size(662, 24);
@@ -262,7 +265,6 @@
             // xBoxToolStripMenuItem
             // 
             this.xBoxToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripSeparator3,
             this.systemToolStripMenuItem,
             this.toolStripSeparator1,
             this.cmdCyclePower,
@@ -276,11 +278,6 @@
             this.xBoxToolStripMenuItem.Size = new System.Drawing.Size(45, 20);
             this.xBoxToolStripMenuItem.Text = "XBox";
             // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(156, 6);
-            // 
             // systemToolStripMenuItem
             // 
             this.systemToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -291,7 +288,7 @@
             this.toolStripSeparator6,
             this.memoryHackerToolStripMenuItem});
             this.systemToolStripMenuItem.Name = "systemToolStripMenuItem";
-            this.systemToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.systemToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.systemToolStripMenuItem.Text = "System";
             // 
             // propertiesToolStripMenuItem
@@ -337,33 +334,33 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(156, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(154, 6);
             // 
             // cmdCyclePower
             // 
             this.cmdCyclePower.Name = "cmdCyclePower";
-            this.cmdCyclePower.Size = new System.Drawing.Size(159, 22);
+            this.cmdCyclePower.Size = new System.Drawing.Size(157, 22);
             this.cmdCyclePower.Text = "Cycle Power";
             this.cmdCyclePower.Click += new System.EventHandler(this.cmdCyclePower_Click);
             // 
             // cmdReset
             // 
             this.cmdReset.Name = "cmdReset";
-            this.cmdReset.Size = new System.Drawing.Size(159, 22);
+            this.cmdReset.Size = new System.Drawing.Size(157, 22);
             this.cmdReset.Text = "Reset";
             this.cmdReset.Click += new System.EventHandler(this.cmdReset_Click);
             // 
             // cmdShutdown
             // 
             this.cmdShutdown.Name = "cmdShutdown";
-            this.cmdShutdown.Size = new System.Drawing.Size(159, 22);
+            this.cmdShutdown.Size = new System.Drawing.Size(157, 22);
             this.cmdShutdown.Text = "Shutdown";
             this.cmdShutdown.Click += new System.EventHandler(this.cmdShutdown_Click);
             // 
             // cmdCustomReboot
             // 
             this.cmdCustomReboot.Name = "cmdCustomReboot";
-            this.cmdCustomReboot.Size = new System.Drawing.Size(159, 22);
+            this.cmdCustomReboot.Size = new System.Drawing.Size(157, 22);
             this.cmdCustomReboot.Text = "Custom Reboot";
             this.cmdCustomReboot.Visible = false;
             this.cmdCustomReboot.Click += new System.EventHandler(this.cmdCustomReboot_Click);
@@ -371,19 +368,19 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(156, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(154, 6);
             // 
             // cmdEjectTray
             // 
             this.cmdEjectTray.Name = "cmdEjectTray";
-            this.cmdEjectTray.Size = new System.Drawing.Size(159, 22);
+            this.cmdEjectTray.Size = new System.Drawing.Size(157, 22);
             this.cmdEjectTray.Text = "Eject Tray";
             this.cmdEjectTray.Click += new System.EventHandler(this.cmdEjectTray_Click);
             // 
             // cmdLoadTray
             // 
             this.cmdLoadTray.Name = "cmdLoadTray";
-            this.cmdLoadTray.Size = new System.Drawing.Size(159, 22);
+            this.cmdLoadTray.Size = new System.Drawing.Size(157, 22);
             this.cmdLoadTray.Text = "Load Tray";
             this.cmdLoadTray.Click += new System.EventHandler(this.cmdLoadTray_Click);
             // 
@@ -420,6 +417,30 @@
             // 
             this.downloadFileWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.downloadFileWorker_DoWork);
             this.downloadFileWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.Worker_RunWorkerCompleted);
+            // 
+            // toolsToolStripMenuItem
+            // 
+            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.yeloStreamToolStripMenuItem,
+            this.yeloControllerToolStripMenuItem});
+            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.toolsToolStripMenuItem.Text = "Tools";
+            // 
+            // yeloStreamToolStripMenuItem
+            // 
+            this.yeloStreamToolStripMenuItem.Name = "yeloStreamToolStripMenuItem";
+            this.yeloStreamToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.yeloStreamToolStripMenuItem.Text = "Yelo Stream";
+            this.yeloStreamToolStripMenuItem.Click += new System.EventHandler(this.yeloStreamToolStripMenuItem_Click);
+            // 
+            // yeloControllerToolStripMenuItem
+            // 
+            this.yeloControllerToolStripMenuItem.Enabled = false;
+            this.yeloControllerToolStripMenuItem.Name = "yeloControllerToolStripMenuItem";
+            this.yeloControllerToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.yeloControllerToolStripMenuItem.Text = "Yelo Controller";
+            this.yeloControllerToolStripMenuItem.Click += new System.EventHandler(this.yeloControllerToolStripMenuItem_Click);
             // 
             // XBoxExplorer
             // 
@@ -477,7 +498,6 @@
         private System.Windows.Forms.ToolStripMenuItem mnuScripts;
         private System.Windows.Forms.ToolStripSeparator sepAddToScriptsMenu;
         private System.Windows.Forms.ToolStripMenuItem cmdAddToScriptsMenu;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem systemToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
@@ -492,6 +512,9 @@
         private System.ComponentModel.BackgroundWorker downloadFileWorker;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem memoryHackerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem yeloStreamToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem yeloControllerToolStripMenuItem;
 
     }
 }

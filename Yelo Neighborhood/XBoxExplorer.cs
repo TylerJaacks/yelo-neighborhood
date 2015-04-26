@@ -7,6 +7,8 @@ using System.IO;
 using System.Threading;
 using System.Xml;
 using Yelo.Shared;
+using System.Reflection;
+using System.Diagnostics;
 
 namespace Yelo.Neighborhood
 {
@@ -625,6 +627,18 @@ namespace Yelo.Neighborhood
         private void StatusChanged(string status)
         {
             lblStatus.Text = status;
+        }
+
+        private void yeloStreamToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo(typeof(Yelo.Stream.ScreenshotTool).Assembly.Location);
+            Process.Start(startInfo);
+        }
+
+        private void yeloControllerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo(typeof(Yelo.Controller.XBoxController).Assembly.Location);
+            Process.Start(startInfo);
         }
     };
 }

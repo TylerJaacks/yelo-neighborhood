@@ -28,13 +28,36 @@ namespace Yelo.Controller
 
             ControllerThread = new Thread(ControllerLoop);
             ControllerThread.Start();
+
+            sendTimer.Start();
 		}
 
         private void XBoxController_FormClosing(object sender, FormClosingEventArgs e)
         {
             running = false;
+            XBoxIO.XBox.Disconnect();
         }
 
+        private void sendTimer_Tick(object sender, EventArgs e)
+        {
+            sendTimer.Stop();
+            if (XBoxIO.XBox.Connected)
+            {
+                if (XBoxIO.XBox.Gamepad == null)
+                {
+                    running = false;
+                    MessageBox.Show("Unable To Access Gamepad", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    InputState inputStateCopy = new InputState();
+                    inputStateCopy.AssignState(inputState);
+                    XBoxIO.XBox.Gamepad.SetState(0, inputStateCopy);
+                    inputState = new InputState();
+                    sendTimer.Start();
+                }
+            }
+        }
 
         Input input;
         InputState inputState;
@@ -66,26 +89,8 @@ namespace Yelo.Controller
             running = true;
             while (running)
             {
-                Thread.Sleep(100);
-
                 AcceptKeyboardInput(input, inputState);
                 AcceptMouseInput(input, inputState);
-
-                if (XBoxIO.FindXBox())
-                {
-                    if (XBoxIO.XBox.Gamepad == null)
-                    {
-                        MessageBox.Show("Unable To Access Gamepad", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        running = false;
-                    }
-                    else
-                    {
-                        InputState inputStateCopy = new InputState();
-                        inputStateCopy.AssignState(inputState);
-                        XBoxIO.XBox.Gamepad.SetState(0, inputStateCopy);
-                        inputState = new InputState();
-                    }
-                }
             }
         }
 
@@ -99,14 +104,30 @@ namespace Yelo.Controller
                 if (Keyboard[Key.LeftArrow]) inputState.ThumbLX = short.MinValue;
                 if (Keyboard[Key.DownArrow]) inputState.ThumbLY = short.MinValue;
                 if (Keyboard[Key.RightArrow]) inputState.ThumbLX = short.MaxValue;
+
+                if (Keyboard[Key.NumPad8]) inputState.ThumbRY = short.MaxValue;
+                if (Keyboard[Key.NumPad4]) inputState.ThumbRX = short.MinValue;
+                if (Keyboard[Key.NumPad2]) inputState.ThumbRY = short.MinValue;
+                if (Keyboard[Key.NumPad6]) inputState.ThumbRX = short.MaxValue;
+
+                if (Keyboard[Key.NumPad0]) inputState.Buttons |= Buttons.LeftThumb;
+                if (Keyboard[Key.NumPad5]) inputState.Buttons |= Buttons.RightThumb;
+
                 if (Keyboard[Key.BackSpace]) inputState.Buttons |= Buttons.Back;
                 if (Keyboard[Key.Return]) inputState.Buttons |= Buttons.Start;
+
                 if (Keyboard[Key.W]) inputState.AnalogButtons[(int)AnalogButtons.Y] = 0xFF;
                 if (Keyboard[Key.A]) inputState.AnalogButtons[(int)AnalogButtons.X] = 0xFF;
                 if (Keyboard[Key.S]) inputState.AnalogButtons[(int)AnalogButtons.A] = 0xFF;
                 if (Keyboard[Key.D]) inputState.AnalogButtons[(int)AnalogButtons.B] = 0xFF;
-                if (Keyboard[Key.E]) inputState.AnalogButtons[(int)AnalogButtons.White] = 0xFF;
-                if (Keyboard[Key.Q]) inputState.AnalogButtons[(int)AnalogButtons.Black] = 0xFF;
+
+                if (Keyboard[Key.Q]) inputState.AnalogButtons[(int)AnalogButtons.White] = 0xFF;
+                if (Keyboard[Key.E]) inputState.AnalogButtons[(int)AnalogButtons.Black] = 0xFF;
+
+                if (Keyboard[Key.I]) inputState.Buttons |= Buttons.Up;
+                if (Keyboard[Key.J]) inputState.Buttons |= Buttons.Left;
+                if (Keyboard[Key.K]) inputState.Buttons |= Buttons.Down;
+                if (Keyboard[Key.L]) inputState.Buttons |= Buttons.Right;
 
                 if (Keyboard[Key.Escape])
                 {
@@ -132,10 +153,8 @@ namespace Yelo.Controller
 
             Point center = new Point(Location.X + Size.Width / 2, Location.Y + Size.Height / 2);
 
-            inputState.ThumbRX = (short)((MousePosition.X - center.X) * 1000);
-            inputState.ThumbRY = (short)(-(MousePosition.Y - center.Y) * 1000);
-            prevX = inputState.ThumbRX;
-            prevY = inputState.ThumbRY;
+            inputState.ThumbRX += (short)((MousePosition.X - center.X) * 1000);
+            inputState.ThumbRY += (short)(-(MousePosition.Y - center.Y) * 1000);
 
             Cursor.Position = center;
 

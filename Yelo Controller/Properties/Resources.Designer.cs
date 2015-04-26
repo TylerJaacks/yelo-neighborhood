@@ -59,5 +59,15 @@ namespace Yelo.Controller.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Xbox_controller_diagram {
+            get {
+                object obj = ResourceManager.GetObject("Xbox_controller_diagram", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

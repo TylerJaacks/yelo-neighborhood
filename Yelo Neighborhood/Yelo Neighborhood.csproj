@@ -134,6 +134,10 @@
     <Content Include="xbox_icon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Yelo Controller\Yelo Controller.csproj">
+      <Project>{47e4df36-1c1a-412b-b07c-8da8b04ebc3e}</Project>
+      <Name>Yelo Controller</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Yelo Debug\Yelo Debug.csproj">
       <Project>{f5db1c08-e8a7-4618-9e0e-0cc225597c75}</Project>
       <Name>Yelo Debug</Name>
@@ -141,6 +145,10 @@
     <ProjectReference Include="..\Yelo Shared\Yelo Shared.csproj">
       <Project>{aaf2dddf-ac76-4ab0-bf5b-a1cf680163cd}</Project>
       <Name>Yelo Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Yelo Stream\Yelo Stream.csproj">
+      <Project>{9fad89d8-2bd7-43f8-92a7-0d32fc88712c}</Project>
+      <Name>Yelo Stream</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
